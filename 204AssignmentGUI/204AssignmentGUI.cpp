@@ -191,11 +191,34 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					break;
 
 				case 3 : 
+					val.resize(GetWindowTextLength(tBoxInp) + 1, '\0'); // resize the string so iit can contain the text stored in the edit-control.
 
+					tbStatus = GetWindowText(tBoxInp, LPSTR(val.c_str()), GetWindowTextLength(tBoxInp) + 1); // Getting the data the user typed
+					if (tbStatus != 0) {
+						string res = floatToBin(val);
+						if (res != "error") {
+							SetWindowText(lblRes, LPSTR(res.c_str()));
+						}
+						else {
+							::MessageBox(hWnd, "Invalid Input. Enter a Float", "Error!", MB_OK);
+						}
+					}
 					break; 
 
 				case 4 : 
+					val.resize(GetWindowTextLength(tBoxInp) + 1, '\0'); // resize the string so iit can contain the text stored in the edit-control.
 
+					tbStatus = GetWindowText(tBoxInp, LPSTR(val.c_str()), GetWindowTextLength(tBoxInp) + 1); // Getting the data the user typed
+
+					if (tbStatus != 0) {
+						string res = binToFloat(val);
+						if (res != "error") {
+							SetWindowText(lblRes, LPSTR(res.c_str()));
+						}
+						else {
+							::MessageBox(hWnd, "Invalid Input. Enter the binary form of a Float", "Error!", MB_OK);
+						}
+					}
 					break; 
 				}
 			break;
@@ -282,8 +305,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		//HINSTANCE hInstance = (HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE);
 		lblOperation = CreateWindow(TEXT("STATIC"),(LPCSTR) operations[0], WS_VISIBLE | WS_CHILD, 10, 10, 200, 20, hWnd, NULL, NULL, NULL);
-		tBoxInp = CreateWindow(TEXT("EDIT"), TEXT(""), WS_VISIBLE | WS_BORDER | WS_CHILD | ES_AUTOHSCROLL, 10, 50, 200, 25, hWnd, (HMENU)i_text, NULL, NULL);
-		lblRes = CreateWindow(TEXT("STATIC"), TEXT(""), WS_VISIBLE | WS_CHILD | ES_AUTOHSCROLL, 220, 50, 600, 25, hWnd, (HMENU)i_text, NULL, NULL);
+		tBoxInp = CreateWindow(TEXT("EDIT"), TEXT(""), WS_VISIBLE | WS_BORDER | WS_CHILD | ES_AUTOHSCROLL, 10, 50, 300, 25, hWnd, (HMENU)i_text, NULL, NULL);
+		lblRes = CreateWindow(TEXT("EDIT"), TEXT(""), WS_VISIBLE | WS_CHILD | ES_AUTOHSCROLL, 320, 50, 600, 25, hWnd, (HMENU)i_text, NULL, NULL);
 		radioIntToBin = CreateWindowEx(0, "BUTTON", operations[0], WS_VISIBLE | WS_CHILD | BS_RADIOBUTTON, 65, 150, 150, 25, hWnd, (HMENU)cmndRadioIntToBin, NULL, NULL);
 		radioBinToInt = CreateWindowEx(0,"BUTTON", operations[1], WS_VISIBLE | WS_CHILD | BS_RADIOBUTTON,65, 185, 150, 25, hWnd, (HMENU)cmndRadioBinToInt, NULL, NULL);
 		radioFloatToBin = CreateWindowEx(0, "BUTTON", operations[2], WS_VISIBLE | WS_CHILD | BS_RADIOBUTTON, 65, 220, 150, 25, hWnd, (HMENU)cmndRadioFloatToBin, NULL, NULL);

@@ -10,7 +10,6 @@ string intToBin(string inp) {
 
 	signed int num;
 	bitset<32> bin; // get bits and store
-	string res; 
 	int index = 1;
 
 	try {
@@ -22,9 +21,7 @@ string intToBin(string inp) {
 			//bin[i] = ((a > 0) ? 1 : 0);
 		}
 
-		res = bin.to_string<char, std::string::traits_type, std::string::allocator_type>();
-
-		return res; 
+		return bin.to_string<char, std::string::traits_type, std::string::allocator_type>();
 	}
 	catch (exception e) {
 		return "error";
@@ -66,12 +63,9 @@ string binToInt(string binInput) {
 	}
 }
 
-void floatToBin() {
+string floatToBin(string inp) {
 	float num;
-	string inp;
 	int *ptr = (int*)&num;
-	cout << "Enter a float value : ";
-	getline(cin, inp);
 	bitset<32> bin;
 	int index = 1;
 	try {
@@ -82,51 +76,52 @@ void floatToBin() {
 			index = index * 2;
 		}
 
-		cout << bin << endl;
+		return bin.to_string<char, std::string::traits_type, std::string::allocator_type>();
 	}
 	catch (exception e) {
-		cout << "error" << endl;
+		return "error";
 	}
 }
 
-void binToFloat() {
+string binToFloat(string binInput) {
 
 	int s = 0;
 	int e = 0;
 	float m = 0;
 	float res;
-	cout << "Enter a number in binary :";
-	string binInput;
 	char bin[32];
-	getline(cin, binInput);
-	for (int i = 0, inpCnt = 0; i < 32; ++i, ++inpCnt) {
-		if (inpCnt >= binInput.size()) {
-			bin[i] = '0';
+	try {
+		for (int i = 0, inpCnt = 0; i < 32; ++i, ++inpCnt) {
+			if (inpCnt >= binInput.size()-1) {
+				bin[i] = '0';
+			}
+			else {
+				bin[i] = binInput.at(inpCnt);
+			}
+
+			if (bin[i] != '0' && bin[i] != '1')
+				throw exception("exc");
 		}
-		else {
-			bin[i] = binInput.at(inpCnt);
+
+		if (bin[0] == '1')
+			s = 1;
+		else
+			s = 0;
+
+		for (int j = 1; j < 9; ++j) {
+			e = (e * 2) + bin[j] - '0';
 		}
 
+		for (int j = 9, i = 2; j < 32; ++j, i *= 2) {
+			m += (1.0 / (float)i) * (bin[j] - '0');
+		}
+
+		res = (1 - (2 * s)) * (1 + m) * pow(2, (e - 127));
+
+		return to_string(res);
 	}
-
-	if (bin[0] == '1')
-		s = 1;
-	else
-		s = 0;
-
-	for (int j = 1; j < 9; ++j) {
-		e = (e * 2) + bin[j] - '0';
+	catch (exception e) {
+		return "error";
 	}
-
-	for (int j = 9, i = 2; j < 32; ++j, i *= 2) {
-		m += (1.0 / (float)i) * (bin[j] - '0');
-	}
-	cout << endl;
-	cout << "Sign : " << s << endl;
-	cout << "Exponent : " << e << endl;
-	cout << "Mantissa : " << m << endl;
-	res = (1 - (2 * s)) * (1 + m) * pow(2, (e - 127));
-
-	cout << res << endl;
 }
 
