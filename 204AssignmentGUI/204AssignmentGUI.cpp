@@ -142,6 +142,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_COMMAND:
         {
+
+			int tbStatus = 0;
+			string val; // The data the user has typed will be stored here
             int wmId = LOWORD(wParam);
             // Parse the menu selections:
             switch (wmId)
@@ -154,13 +157,37 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 break;
 
 			case cmndButton:
+				
 				switch (currOperation) {
 				case 1 :
+					val.resize(GetWindowTextLength(tBoxInp) + 1, '\0'); // resize the string so iit can contain the text stored in the edit-control.
 
+					tbStatus = GetWindowText(tBoxInp, LPSTR(val.c_str()), GetWindowTextLength(tBoxInp) + 1); // Getting the data the user typed
+					if (tbStatus != 0) {
+						string res = intToBin(val);
+						if ( res != "error") {
+							SetWindowText(lblRes, LPSTR(res.c_str()));
+						} else {
+							::MessageBox(hWnd, "Invalid Input. Enter an Integer", "Error!",  MB_OK);
+						}
+					}
 					break; 
 
 				case 2 : 
+					
+					val.resize(GetWindowTextLength(tBoxInp) + 1, '\0'); // resize the string so iit can contain the text stored in the edit-control.
 
+					tbStatus = GetWindowText(tBoxInp, LPSTR(val.c_str()), GetWindowTextLength(tBoxInp) + 1); // Getting the data the user typed
+					
+					if (tbStatus != 0) {
+						string res = binToInt(val);
+						if (res != "error") {
+							SetWindowText(lblRes, LPSTR(res.c_str()));
+						}
+						else {
+							::MessageBox(hWnd, "Invalid Input. Enter the binary form of an integer", "Error!", MB_OK);
+						}
+					}
 					break;
 
 				case 3 : 
@@ -171,7 +198,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					break; 
 				}
-				break;
+			break;
 
 			case cmndRadioIntToBin:
 				switch (HIWORD(wParam)) {
@@ -255,12 +282,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		//HINSTANCE hInstance = (HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE);
 		lblOperation = CreateWindow(TEXT("STATIC"),(LPCSTR) operations[0], WS_VISIBLE | WS_CHILD, 10, 10, 200, 20, hWnd, NULL, NULL, NULL);
-		tBoxInp = CreateWindow(TEXT("EDIT"), TEXT("Integer"), WS_VISIBLE | WS_BORDER | WS_CHILD | ES_AUTOHSCROLL, 10, 50, 200, 25, hWnd, (HMENU)i_text, NULL, NULL);
-		lblRes = CreateWindow(TEXT("STATIC"), TEXT(""), WS_VISIBLE | WS_CHILD | ES_AUTOHSCROLL, 220, 50, 200, 25, hWnd, (HMENU)i_text, NULL, NULL);
-		radioIntToBin = CreateWindowEx(0, "BUTTON", operations[0], WS_VISIBLE | WS_CHILD | BS_RADIOBUTTON, 450, 10, 150, 25, hWnd, (HMENU)cmndRadioIntToBin, NULL, NULL);
-		radioBinToInt = CreateWindowEx(0,"BUTTON", operations[1], WS_VISIBLE | WS_CHILD | BS_RADIOBUTTON,450, 45, 150, 25, hWnd, (HMENU)cmndRadioBinToInt, NULL, NULL);
-		radioFloatToBin = CreateWindowEx(0, "BUTTON", operations[2], WS_VISIBLE | WS_CHILD | BS_RADIOBUTTON, 450, 80, 150, 25, hWnd, (HMENU)cmndRadioFloatToBin, NULL, NULL);
-		radioBinToFloat = CreateWindowEx(0, "BUTTON", operations[3], WS_VISIBLE | WS_CHILD | BS_RADIOBUTTON, 450, 115, 150, 25, hWnd, (HMENU)cmndRadioBinToFloat, NULL, NULL);
+		tBoxInp = CreateWindow(TEXT("EDIT"), TEXT(""), WS_VISIBLE | WS_BORDER | WS_CHILD | ES_AUTOHSCROLL, 10, 50, 200, 25, hWnd, (HMENU)i_text, NULL, NULL);
+		lblRes = CreateWindow(TEXT("STATIC"), TEXT(""), WS_VISIBLE | WS_CHILD | ES_AUTOHSCROLL, 220, 50, 600, 25, hWnd, (HMENU)i_text, NULL, NULL);
+		radioIntToBin = CreateWindowEx(0, "BUTTON", operations[0], WS_VISIBLE | WS_CHILD | BS_RADIOBUTTON, 65, 150, 150, 25, hWnd, (HMENU)cmndRadioIntToBin, NULL, NULL);
+		radioBinToInt = CreateWindowEx(0,"BUTTON", operations[1], WS_VISIBLE | WS_CHILD | BS_RADIOBUTTON,65, 185, 150, 25, hWnd, (HMENU)cmndRadioBinToInt, NULL, NULL);
+		radioFloatToBin = CreateWindowEx(0, "BUTTON", operations[2], WS_VISIBLE | WS_CHILD | BS_RADIOBUTTON, 65, 220, 150, 25, hWnd, (HMENU)cmndRadioFloatToBin, NULL, NULL);
+		radioBinToFloat = CreateWindowEx(0, "BUTTON", operations[3], WS_VISIBLE | WS_CHILD | BS_RADIOBUTTON, 65, 255, 150, 25, hWnd, (HMENU)cmndRadioBinToFloat, NULL, NULL);
 		btnConvert = CreateWindow(TEXT("button"), TEXT("Convert"), WS_VISIBLE | WS_CHILD, 65, 115, 200, 25, hWnd, (HMENU)cmndButton, NULL, NULL);
 		if (SendDlgItemMessage(hWnd, cmndRadioIntToBin, BM_GETCHECK, 0, 0) == 0) {
 			SendDlgItemMessage(hWnd, cmndRadioIntToBin, BM_SETCHECK, 1, 0);
